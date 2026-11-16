@@ -1,0 +1,83 @@
+// use prisma-8
+
+model User {
+  id              String        @id @onCreate(uuid(7))
+  first_name      String
+  last_name       String?
+  email           String        @unique
+  phone           String?       @unique
+  birth           String?
+  gender          String?
+  createdAt       DateTime      @onCreate(now())
+  updatedAt       temporal.UpdatedAt
+
+  favorite        Favorite[]
+  order           Order[]
+}
+
+model Product {
+  id              String        @id @onCreate(uuid(7))
+  name            String
+  category        String
+  description     String?
+  price           Int
+  stock           Int
+  colors          String[]
+  images          String[]
+
+  favorite        Favorite[]
+  order_item      OrderItem[]
+
+  @@check(expression: sql`stock >= 0`, name: "stock_not_negative")
+}
+
+model Favorite {
+  user_id         String
+  user            User          @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  product_id      String
+  product         Product       @relation(fields: [product_id], references: [id], onDelete: Cascade)
+  createdAt       DateTime      @onCreate(now())
+  isDeleted       Boolean       @default(false)
+
+  @@id([user_id, product_id])
+}
+
+model Order {
+  id              String        @id @onCreate(uuid(7))
+  orderNumber     Int           @default(autoincrement())
+  customerName    String
+  user_id         String?
+  user            User?         @relation(fields: [user_id], references: [id], onDelete: SetNull)
+  address         String
+  type            String
+  amount          Int
+  createdAt       DateTime      @onCreate(now())
+  updatedAt       temporal.UpdatedAt
+
+  status          OrderStatus  @default(PENDING)
+
+  order_item      OrderItem[]
+  
+}
+
+model OrderItem {
+  order_id        String
+  order           Order         @relation(fields: [order_id], references: [id], onDelete: Cascade)
+  product_id      String
+  product         Product       @relation(fields: [product_id], references: [id], onDelete: Restrict)
+  quantity        Int
+  price           Int
+
+  @@id([order_id, product_id])
+
+  @@check(expression: sql`quantity > 0`, name: "quantity_positive")
+  @@check(expression: sql`price >= 0`, name: "price_not_negative") 
+}
+
+enum OrderStatus {
+  @@type("pg/text@1")
+  pending = "PENDING"
+  paid = "PAID"
+  shipped = "SHIPPED"
+  canceled = "CANCELED"
+}
