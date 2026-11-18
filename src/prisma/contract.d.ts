@@ -23,7 +23,7 @@ import type {
 } from '@prisma/orm-postgres/contract/types';
 
 export type StorageHash =
-  StorageHashBase<'2bf0ee1afcc20123ce1cc954193f02829eb6dc82644d42f9b42ac456cc2dc146'>;
+  StorageHashBase<'dc344dac8a0f9936cb4fa95d2f8e26e027f2ec5037624cba6188fea1b08a7f87'>;
 export type ExecutionHash =
   ExecutionHashBase<'0b84b6712452566edbb8aeb68672fcb6dd78d9f1f07a6e1cfec4ddf50433f380'>;
 export type ProfileHash =
@@ -368,6 +368,7 @@ export namespace Models {
     description: FieldOutputTypes['public']['Product']['description'];
     id: FieldOutputTypes['public']['Product']['id'];
     images: FieldOutputTypes['public']['Product']['images'];
+    isDeleted: FieldOutputTypes['public']['Product']['isDeleted'];
     name: FieldOutputTypes['public']['Product']['name'];
     price: FieldOutputTypes['public']['Product']['price'];
     stock: FieldOutputTypes['public']['Product']['stock'];
@@ -693,6 +694,16 @@ type ContractBase = Omit<
                   readonly codecId: 'pg/text@1';
                   readonly nullable: false;
                   readonly many: { readonly elementNullable: false };
+                };
+                readonly isDeleted: {
+                  readonly dataType: 'pg/bool';
+                  readonly codecId: 'pg/bool@1';
+                  readonly nullable: false;
+                  readonly default: {
+                    readonly kind: 'literal';
+                    readonly value: DefaultLiteralValue<'pg/bool@1', false>;
+                  };
+                  readonly many: false;
                 };
                 readonly name: {
                   readonly dataType: 'pg/text';
@@ -1039,6 +1050,10 @@ type ContractBase = Omit<
                 readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
                 readonly many: { readonly elementNullable: false };
               };
+              readonly isDeleted: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/bool@1' };
+              };
               readonly name: {
                 readonly nullable: false;
                 readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
@@ -1085,6 +1100,7 @@ type ContractBase = Omit<
                 readonly description: { readonly column: 'description' };
                 readonly id: { readonly column: 'id' };
                 readonly images: { readonly column: 'images' };
+                readonly isDeleted: { readonly column: 'isDeleted' };
                 readonly name: { readonly column: 'name' };
                 readonly price: { readonly column: 'price' };
                 readonly stock: { readonly column: 'stock' };

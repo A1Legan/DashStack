@@ -25,6 +25,8 @@ model Product {
   colors          String[]
   images          String[]
 
+  isDeleted       Boolean       @default(false)
+
   favorite        Favorite[]
   order_item      OrderItem[]
 
@@ -54,7 +56,7 @@ model Order {
   createdAt       DateTime      @onCreate(now())
   updatedAt       temporal.UpdatedAt
 
-  status          OrderStatus  @default(PENDING)
+  status          OrderStatus   @default(pending)
 
   order_item      OrderItem[]
   
